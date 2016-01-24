@@ -1,2 +1,2 @@
-# Tor's hammer
+# Torshammer
 ## Written by .?@#]*@
